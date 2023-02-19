@@ -1,23 +1,23 @@
 version: '2'
 services:
-  mi-mongo:
+  mi-mysql:
     image: mysql
     container_name: mi-mysql
     networks:
       mi-red:
-         ipv4_address: 172.26.0.15
+         ipv4_address: 172.27.0.15
     environment:
       - MYSQL_ROOT_PASSWORD=toor
     volumes:
       - mi-volumen:/var/lib/mysql
     restart: always
 
-  mi-mongo-express:
+  mi-dashboard:
     image: phpmyadmin
     container_name: mi-dashboard
     networks:
       mi-red:
-         ipv4_address: 172.26.0.16
+         ipv4_address: 172.27.0.16
     environment:
       - PMA_HOST=mi-mysql
     ports:
@@ -32,7 +32,7 @@ networks:
         ipam:
             driver: default
             config:
-              - subnet: 172.26.0.0/16
+              - subnet: 172.27.0.0/16
 
     
 volumes:

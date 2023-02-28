@@ -1,0 +1,57 @@
+version: '2'
+services:
+  mi-mongo:
+    image: mongo:4.4-rc
+    container_name: mi-mongo
+    networks:
+      mongo-node-net:
+         ipv4_address: 172.40.0.10
+    volumes:
+      - mongo-vol:/data/db
+    ports:
+      - 27017:27017
+    restart: always
+
+  mi-node:
+    image: mi-app
+    container_name: mi-node
+    networks:
+      mongo-node-net:
+         ipv4_address: 172.40.0.11
+      node-nginx-net:
+         ipv4_address: 172.80.0.10
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mi-mongo
+    ports:
+      - 8080:8080
+    restart: always
+
+    depends_on:
+      - mi-mongo
+
+  mi-nginx:
+    image: nginx:1.23
+    container_name: mi-nginx
+    networks:
+      node-nginx-net:
+         ipv4_address: 172.80.0.11
+    ports:
+      - 80:80
+    restart: always
+
+
+networks:
+   mongo-node-net:
+        ipam:
+            driver: default
+            config:
+              - subnet: 172.40.0.0/16
+   node-nginx-net:
+        ipam:
+            driver: default
+            config:
+              - subnet: 172.80.0.0/16
+
+    
+volumes:
+  mongo-vol:
